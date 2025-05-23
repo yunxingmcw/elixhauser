@@ -173,9 +173,13 @@ def _handle_exclusions_vectorized(results: pd.DataFrame) -> pd.DataFrame:
     mask = results['DIAB_CX'] == 1
     results.loc[mask, 'DIAB_UNCX'] = 0
     
-    # If metastatic cancer is present, remove solid tumor
+    # If metastatic cancer is present, remove solid  and insitu tumor
     mask = results['CANCER_METS'] == 1
-    results.loc[mask, 'CANCER_SOLID'] = 0
+    results.loc[mask, ['CANCER_SOLID','CANCER_NSITU']] = 0
+    
+    ## If solid cancer is present, remove insitu tumor
+    mask = results['CANCER_SOLID'] == 1
+    results.loc[mask, 'CANCER_NSITU'] = 0
     
     return results
 
